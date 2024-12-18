@@ -14,7 +14,7 @@ import com.project.dicodingevent.data.local.entity.EventEntity
 import com.project.dicodingevent.databinding.FragmentFinishedBinding
 import com.project.dicodingevent.ui.DetailActivity
 import com.project.dicodingevent.ui.adapter.EventSmallAdapter
-import com.project.dicodingevent.ui.factory.FinishedModelFactory
+import com.project.dicodingevent.ui.factory.FinishedViewModelFactory
 import com.project.dicodingevent.ui.model.FinishedViewModel
 import kotlinx.coroutines.launch
 
@@ -29,7 +29,7 @@ class FinishedFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<FinishedViewModel> {
-        FinishedModelFactory.getInstance(requireActivity())
+        FinishedViewModelFactory.getInstance(requireActivity())
     }
 
     private lateinit var eventsAdapter: EventSmallAdapter

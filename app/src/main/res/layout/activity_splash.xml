@@ -8,27 +8,15 @@
     tools:context=".ui.SplashActivity">
 
     <ImageView
-        android:id="@+id/img_logo_splash"
+        android:id="@+id/imgLogoSplash"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:contentDescription="@string/img_content"
-        android:src="@drawable/dicodinglogo"
+        android:src="@drawable/dicoding_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.40" />
-
-    <ImageView
-        android:id="@+id/img_text_logo"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:src="@drawable/dicoding_text"
-        android:contentDescription="@string/img_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/img_logo_splash"
-        app:layout_constraintStart_toStartOf="@+id/img_logo_splash"
-        app:layout_constraintTop_toTopOf="@+id/img_logo_splash"
-        app:layout_constraintVertical_bias="0.80" />
+        app:layout_constraintVertical_bias="0.50" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

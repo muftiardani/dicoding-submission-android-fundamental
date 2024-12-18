@@ -14,7 +14,7 @@ import androidx.fragment.app.viewModels
 import com.project.dicodingevent.data.local.datastore.SettingPreferences
 import com.project.dicodingevent.data.local.datastore.dataStore
 import com.project.dicodingevent.databinding.FragmentSettingBinding
-import com.project.dicodingevent.ui.factory.SettingModelFactory
+import com.project.dicodingevent.ui.factory.SettingViewModelFactory
 import com.project.dicodingevent.ui.model.SettingViewModel
 
 class SettingFragment : Fragment() {
@@ -27,7 +27,7 @@ class SettingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SettingViewModel by viewModels {
-        SettingModelFactory(SettingPreferences.getInstance(requireContext().dataStore))
+        SettingViewModelFactory(SettingPreferences.getInstance(requireContext().dataStore))
     }
 
     private val requestPermissionLauncher = registerForActivityResult(

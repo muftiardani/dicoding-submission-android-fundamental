@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.project.dicodingevent.data.local.datastore.SettingPreferences
 import com.project.dicodingevent.ui.model.SettingViewModel
 
-class SettingModelFactory(
+class SettingViewModelFactory(
     private val pref: SettingPreferences
 ) : ViewModelProvider.NewInstanceFactory() {
 

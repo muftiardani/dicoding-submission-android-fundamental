@@ -25,7 +25,7 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/img_event"
+            android:id="@+id/imgEvent"
             android:contentDescription="@string/img_content"
             android:layout_width="match_parent"
             android:layout_height="280dp"
@@ -35,13 +35,12 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-
         <TextView
-            android:id="@+id/tv_title_event"
+            android:id="@+id/tvTitleEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="2dp"
             android:textSize="18sp"
@@ -49,22 +48,22 @@
             android:textAlignment="center"
             tools:text="@string/title_event"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_event" />
+            app:layout_constraintTop_toBottomOf="@+id/imgEvent" />
 
         <TextView
-            android:id="@+id/tv_summary_event"
+            android:id="@+id/tvSummaryEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="12dp"
             android:textSize="16sp"
             android:textColor="@color/pink_200"
             tools:text="@string/summary_event"
             android:textAlignment="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title_event"/>
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleEvent"/>
 
         <TextView
-            android:id="@+id/tv_remaining_quota"
+            android:id="@+id/tvRemainingQuota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -75,10 +74,10 @@
             android:textStyle="bold"
             tools:text="@string/remaining_quota"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_summary_event" />
+            app:layout_constraintTop_toBottomOf="@id/tvSummaryEvent" />
 
         <TextView
-            android:id="@+id/tv_begin_time"
+            android:id="@+id/tvBeginTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
@@ -88,14 +87,14 @@
             android:layout_marginEnd="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintEnd_toEndOf="@id/tv_summary_event"
+            app:layout_constraintEnd_toEndOf="@id/tvSummaryEvent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tv_remaining_quota"
-            app:layout_constraintTop_toBottomOf="@id/tv_summary_event"
+            app:layout_constraintStart_toEndOf="@id/tvRemainingQuota"
+            app:layout_constraintTop_toBottomOf="@id/tvSummaryEvent"
             tools:text="@string/begin_time" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_category"
+            android:id="@+id/cardCategory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -104,10 +103,10 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_remaining_quota" >
+            app:layout_constraintTop_toBottomOf="@+id/tvRemainingQuota" >
 
             <TextView
-                android:id="@+id/tv_category"
+                android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
@@ -119,7 +118,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tv_owner"
+            android:id="@+id/tvOwner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -129,12 +128,11 @@
             android:textSize="14sp"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_category"
+            app:layout_constraintTop_toBottomOf="@id/cardCategory"
             tools:text="@string/owner_event"/>
 
-
         <TextView
-            android:id="@+id/tv_information"
+            android:id="@+id/tvInformation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -145,32 +143,31 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_owner" />
+            app:layout_constraintTop_toBottomOf="@+id/tvOwner" />
 
         <TextView
-            android:id="@+id/tv_description"
+            android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginVertical="8dp"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_information"
+            app:layout_constraintTop_toBottomOf="@+id/tvInformation"
             tools:text="@string/description" />
 
         <Button
-            android:id="@+id/btn_register"
+            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="84dp"
             android:layout_marginVertical="8dp"
             android:text="@string/register_event"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </ScrollView>

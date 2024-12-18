@@ -26,16 +26,16 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val NAVIGATION_ITEMS = setOf(
-            R.id.navigation_home,
-            R.id.navigation_upcoming,
-            R.id.navigation_finished,
-            R.id.navigation_favorite,
-            R.id.navigation_setting
+            R.id.navigationHome,
+            R.id.navigationUpcoming,
+            R.id.navigationFinished,
+            R.id.navigationFavorite,
+            R.id.navigationSetting
         )
 
         private val HIDDEN_ACTION_BAR_DESTINATIONS = setOf(
-            R.id.navigation_favorite,
-            R.id.navigation_setting
+            R.id.navigationFavorite,
+            R.id.navigationSetting
         )
     }
 
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
-        navController = findNavController(R.id.nav_host_fragment_activity_main)
+        navController = findNavController(R.id.NavHostFragmentActivityMain)
         val appBarConfiguration = AppBarConfiguration(NAVIGATION_ITEMS)
 
         setupActionBarVisibility()
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_search -> {
+            R.id.menuSearch -> {
                 navigateToSearch()
                 true
             }

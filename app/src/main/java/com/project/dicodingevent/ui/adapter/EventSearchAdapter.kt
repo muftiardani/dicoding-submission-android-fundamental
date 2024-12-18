@@ -57,7 +57,7 @@ class EventSearchAdapter(
         holder.bind(event)
 
         // Hide favorite icon
-        holder.itemView.findViewById<ImageView>(R.id.iv_fav).visibility = View.GONE
+        holder.itemView.findViewById<ImageView>(R.id.ivFav).visibility = View.GONE
     }
 
     companion object {

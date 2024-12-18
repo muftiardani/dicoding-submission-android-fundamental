@@ -3,34 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigationHome">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigationHome"
         android:name="com.project.dicodingevent.ui.fragment.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_upcoming"
+        android:id="@+id/navigationUpcoming"
         android:name="com.project.dicodingevent.ui.fragment.UpcomingFragment"
         android:label="@string/title_upcoming"
         tools:layout="@layout/fragment_upcoming" />
 
     <fragment
-        android:id="@+id/navigation_finished"
+        android:id="@+id/navigationFinished"
         android:name="com.project.dicodingevent.ui.fragment.FinishedFragment"
         android:label="@string/title_finished"
         tools:layout="@layout/fragment_finished" />
 
     <fragment
-        android:id="@+id/navigation_favorite"
+        android:id="@+id/navigationFavorite"
         android:name="com.project.dicodingevent.ui.fragment.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite" />
 
     <fragment
-        android:id="@+id/navigation_setting"
+        android:id="@+id/navigationSetting"
         android:name="com.project.dicodingevent.ui.fragment.SettingFragment"
         android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting" />

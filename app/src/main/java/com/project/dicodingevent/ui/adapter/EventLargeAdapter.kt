@@ -57,7 +57,7 @@ class EventLargeAdapter(
         val event = getItem(position)
         holder.bind(event)
 
-        val ivFav = holder.itemView.findViewById<ImageView>(R.id.iv_fav)
+        val ivFav = holder.itemView.findViewById<ImageView>(R.id.ivFav)
 
         // Set favorite icon based on event status
         val favoriteIcon = if (event.isFavorite) {

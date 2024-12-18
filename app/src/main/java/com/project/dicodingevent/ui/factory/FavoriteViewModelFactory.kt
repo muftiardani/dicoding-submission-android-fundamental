@@ -5,27 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.project.dicodingevent.data.EventRepository
 import com.project.dicodingevent.di.Injection
-import com.project.dicodingevent.ui.model.HomeViewModel
+import com.project.dicodingevent.ui.model.FavoriteViewModel
 
-class HomeModelFactory private constructor(
+class FavoriteViewModelFactory private constructor(
     private val eventRepository: EventRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
-            modelClass.isAssignableFrom(HomeViewModel::class.java) ->
-                HomeViewModel(eventRepository) as T
+            modelClass.isAssignableFrom(FavoriteViewModel::class.java) ->
+                FavoriteViewModel(eventRepository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
 
     companion object {
         @Volatile
-        private var instance: HomeModelFactory? = null
+        private var instance: FavoriteViewModelFactory? = null
 
-        fun getInstance(context: Context): HomeModelFactory =
+        fun getInstance(context: Context): FavoriteViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: HomeModelFactory(
+                instance ?: FavoriteViewModelFactory(
                     Injection.provideRepository(context)
                 ).also { instance = it }
             }

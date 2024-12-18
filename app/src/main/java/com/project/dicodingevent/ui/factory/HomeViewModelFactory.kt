@@ -5,27 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.project.dicodingevent.data.EventRepository
 import com.project.dicodingevent.di.Injection
-import com.project.dicodingevent.ui.model.SearchViewModel
+import com.project.dicodingevent.ui.model.HomeViewModel
 
-class SearchModelFactory private constructor(
+class HomeViewModelFactory private constructor(
     private val eventRepository: EventRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
-            modelClass.isAssignableFrom(SearchViewModel::class.java) ->
-                SearchViewModel(eventRepository) as T
+            modelClass.isAssignableFrom(HomeViewModel::class.java) ->
+                HomeViewModel(eventRepository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
 
     companion object {
         @Volatile
-        private var instance: SearchModelFactory? = null
+        private var instance: HomeViewModelFactory? = null
 
-        fun getInstance(context: Context): SearchModelFactory =
+        fun getInstance(context: Context): HomeViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: SearchModelFactory(
+                instance ?: HomeViewModelFactory(
                     Injection.provideRepository(context)
                 ).also { instance = it }
             }

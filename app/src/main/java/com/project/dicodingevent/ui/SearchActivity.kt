@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.dicodingevent.data.remote.response.ListEventsItem
 import com.project.dicodingevent.databinding.ActivitySearchBinding
 import com.project.dicodingevent.ui.adapter.EventSearchAdapter
-import com.project.dicodingevent.ui.factory.SearchModelFactory
+import com.project.dicodingevent.ui.factory.SearchViewModelFactory
 import com.project.dicodingevent.ui.model.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -25,7 +25,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventSearchAdapter
 
     private val viewModel by viewModels<SearchViewModel> {
-        SearchModelFactory.getInstance(this)
+        SearchViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,7 +8,7 @@
     tools:context=".ui.fragment.SettingFragment">
 
     <TextView
-        android:id="@+id/tv_setting"
+        android:id="@+id/tvSetting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -17,14 +17,13 @@
         android:textSize="24sp"
         android:fontFamily="@font/inter"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tv_dark_mode"
+        app:layout_constraintBottom_toTopOf="@id/tvDarkMode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
-        android:id="@+id/tv_dark_mode"
+        android:id="@+id/tvDarkMode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -32,13 +31,13 @@
         android:text="@string/dark_mode"
         android:textSize="18sp"
         android:fontFamily="@font/inter"
-        app:layout_constraintBottom_toBottomOf="@id/switch_theme"
-        app:layout_constraintEnd_toStartOf="@+id/switch_theme"
+        app:layout_constraintBottom_toBottomOf="@id/switchTheme"
+        app:layout_constraintEnd_toStartOf="@+id/switchTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_theme"
+        android:id="@+id/switchTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -47,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_reminder"
+        android:id="@+id/tvReminder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -55,17 +54,17 @@
         android:text="@string/daily_reminder"
         android:textSize="18sp"
         android:fontFamily="@font/inter"
-        app:layout_constraintEnd_toStartOf="@+id/switch_reminder"
+        app:layout_constraintEnd_toStartOf="@+id/switchReminder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dark_mode" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDarkMode" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_reminder"
+        android:id="@+id/switchReminder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_theme" />
+        app:layout_constraintTop_toBottomOf="@+id/switchTheme" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

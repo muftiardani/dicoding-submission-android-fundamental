@@ -12,7 +12,7 @@ import androidx.core.text.HtmlCompat
 import com.bumptech.glide.Glide
 import com.project.dicodingevent.data.remote.response.EventDetailResponse
 import com.project.dicodingevent.databinding.ActivityDetailBinding
-import com.project.dicodingevent.ui.factory.DetailModelFactory
+import com.project.dicodingevent.ui.factory.DetailViewModelFactory
 import com.project.dicodingevent.ui.model.DetailViewModel
 
 class DetailActivity : AppCompatActivity() {
@@ -25,7 +25,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
 
     private val viewModel by viewModels<DetailViewModel> {
-        DetailModelFactory.getInstance(this)
+        DetailViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

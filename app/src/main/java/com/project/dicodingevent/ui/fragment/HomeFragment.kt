@@ -15,7 +15,7 @@ import com.project.dicodingevent.databinding.FragmentHomeBinding
 import com.project.dicodingevent.ui.DetailActivity
 import com.project.dicodingevent.ui.adapter.EventLargeAdapter
 import com.project.dicodingevent.ui.adapter.EventSmallAdapter
-import com.project.dicodingevent.ui.factory.HomeModelFactory
+import com.project.dicodingevent.ui.factory.HomeViewModelFactory
 import com.project.dicodingevent.ui.model.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<HomeViewModel> {
-        HomeModelFactory.getInstance(requireActivity())
+        HomeViewModelFactory.getInstance(requireActivity())
     }
 
     private lateinit var upcomingEventsAdapter: EventSmallAdapter

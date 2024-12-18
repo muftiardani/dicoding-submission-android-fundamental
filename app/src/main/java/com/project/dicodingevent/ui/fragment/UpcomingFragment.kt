@@ -14,7 +14,7 @@ import com.project.dicodingevent.data.local.entity.EventEntity
 import com.project.dicodingevent.databinding.FragmentUpcomingBinding
 import com.project.dicodingevent.ui.DetailActivity
 import com.project.dicodingevent.ui.adapter.EventLargeAdapter
-import com.project.dicodingevent.ui.factory.UpcomingModelFactory
+import com.project.dicodingevent.ui.factory.UpcomingViewModelFactory
 import com.project.dicodingevent.ui.model.UpcomingViewModel
 import kotlinx.coroutines.launch
 
@@ -28,7 +28,7 @@ class UpcomingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<UpcomingViewModel> {
-        UpcomingModelFactory.getInstance(requireActivity())
+        UpcomingViewModelFactory.getInstance(requireActivity())
     }
 
     private lateinit var eventsAdapter: EventLargeAdapter

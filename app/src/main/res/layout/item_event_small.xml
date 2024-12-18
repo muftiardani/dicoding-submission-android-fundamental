@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/img_event"
+            android:id="@+id/imgEvent"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:contentDescription="@string/img_content"
@@ -29,7 +29,7 @@
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <TextView
-            android:id="@+id/tv_event"
+            android:id="@+id/tvEvent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -42,11 +42,11 @@
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_event"
+            app:layout_constraintTop_toBottomOf="@id/imgEvent"
             tools:text="@string/title_event" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_category"
+            android:id="@+id/cardCategory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -55,10 +55,10 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_event">
+            app:layout_constraintTop_toBottomOf="@+id/tvEvent">
 
             <TextView
-                android:id="@+id/tv_category"
+                android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
@@ -70,29 +70,29 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tv_owner"
+            android:id="@+id/tvOwner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textSize="12sp"
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_category"
+            app:layout_constraintTop_toBottomOf="@id/cardCategory"
             tools:text="@string/owner_event" />
 
         <ImageView
-            android:id="@+id/iv_fav"
+            android:id="@+id/ivFav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:contentDescription="@string/title_favorite"
             android:src="@drawable/baseline_favorite_border_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_event" />
-
+            app:layout_constraintTop_toBottomOf="@+id/tvEvent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
