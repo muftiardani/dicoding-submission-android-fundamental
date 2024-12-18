@@ -21,91 +21,102 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
+    private companion object {
+        const val EVENT_ID_KEY = "EVENT_ID"
+        const val MAX_DISPLAYED_EVENTS = 5
+    }
+
     private var _binding: FragmentHomeBinding? = null
-    private val homeViewModel by viewModels<HomeViewModel>{
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<HomeViewModel> {
         HomeModelFactory.getInstance(requireActivity())
     }
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var upcomingEventsAdapter: EventSmallAdapter
+    private lateinit var finishedEventsAdapter: EventLargeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerViews()
+        setupObservers()
+    }
+
+    private fun setupRecyclerViews() {
+        setupUpcomingEventsRecyclerView()
+        setupFinishedEventsRecyclerView()
+    }
+
+    private fun setupUpcomingEventsRecyclerView() {
+        upcomingEventsAdapter = EventSmallAdapter(
+            onItemClick = ::navigateToDetail,
+            onFavoriteClick = ::handleFavoriteClick
+        )
 
         binding.rvEventUpcoming.apply {
             layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
+            adapter = upcomingEventsAdapter
         }
+    }
+
+    private fun setupFinishedEventsRecyclerView() {
+        finishedEventsAdapter = EventLargeAdapter(
+            onItemClick = ::navigateToDetail,
+            onFavoriteClick = ::handleFavoriteClick
+        )
 
         binding.rvEventFinished.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             setHasFixedSize(true)
+            adapter = finishedEventsAdapter
         }
+    }
 
+    private fun setupObservers() {
+        with(viewModel) {
+            uiState.observe(viewLifecycleOwner) { state ->
+                upcomingEventsAdapter.submitList(state.upcomingEvents.take(MAX_DISPLAYED_EVENTS))
+                finishedEventsAdapter.submitList(state.finishedEvents.take(MAX_DISPLAYED_EVENTS))
+            }
 
-        homeViewModel.listEventUpcoming.observe(viewLifecycleOwner) {eventListUpcoming ->
-            setEventDataUpcoming(eventListUpcoming)
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            isLoading.observe(viewLifecycleOwner, ::showLoading)
         }
+    }
 
-        homeViewModel.listEventFinished.observe(viewLifecycleOwner) { eventListFinished ->
-            setEventDataFinished(eventListFinished)
-        }
-
-        homeViewModel.errorMessage.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {errorMessage ->
-                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show()
+    private fun handleFavoriteClick(event: EventEntity) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (event.isFavorite) {
+                viewModel.toggleEventFavorite(event, false)
+            } else {
+                viewModel.toggleEventFavorite(event, true)
             }
         }
-
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
-        }
-
-        return root
-    }
-
-    private fun setEventDataUpcoming(listEvent: List<EventEntity>) {
-        val adapter = EventSmallAdapter(
-            onItemClick = { eventId -> navigateToDetail(eventId)},
-            onFavoriteClick = { event ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    toggleFavorite(event)
-                }
-            })
-        adapter.submitList(listEvent.take(5))
-        binding.rvEventUpcoming.adapter = adapter
-    }
-
-    private fun setEventDataFinished(listEvent: List<EventEntity>) {
-        val adapter = EventLargeAdapter(
-            onItemClick = { eventId -> navigateToDetail(eventId) },
-            onFavoriteClick = { event ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    toggleFavorite(event)
-                }
-            })
-        adapter.submitList(listEvent.take(5))
-        binding.rvEventFinished.adapter = adapter
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private suspend fun toggleFavorite(event: EventEntity) {
-        if (event.isFavorite) {
-            homeViewModel.deleteEvent(event)
-        } else {
-            homeViewModel.saveEvent(event)
+    private fun navigateToDetail(eventId: Int) {
+        Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(EVENT_ID_KEY, eventId)
+            startActivity(this)
         }
     }
 
@@ -113,12 +124,4 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun navigateToDetail(eventId: Int) {
-        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra("EVENT_ID", eventId)
-        }
-        startActivity(intent)
-    }
-
 }

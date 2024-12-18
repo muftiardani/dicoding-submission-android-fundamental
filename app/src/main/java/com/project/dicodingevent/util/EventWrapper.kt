@@ -2,16 +2,15 @@ package com.project.dicodingevent.util
 
 open class EventWrapper<out T>(private val content: T) {
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    var hasBeenHandled = false
-        private set
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
+    private var hasBeenHandled = false
+
+    fun getContentIfNotHandled(): T? =
+        if (hasBeenHandled) {
             null
         } else {
             hasBeenHandled = true
             content
         }
-    }
+
     fun peekContent(): T = content
 }

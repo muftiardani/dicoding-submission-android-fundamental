@@ -1,12 +1,12 @@
 package com.project.dicodingevent.ui.fragment
 
 import android.content.Intent
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.dicodingevent.data.local.entity.EventEntity
@@ -19,66 +19,59 @@ import kotlinx.coroutines.launch
 
 class FavoriteFragment : Fragment() {
 
-    private var _binding: FragmentFavoriteBinding? = null
+    private companion object {
+        const val EVENT_ID_KEY = "EVENT_ID"
+    }
 
-    private val favoriteViewModel by viewModels<FavoriteViewModel>{
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<FavoriteViewModel> {
         FavoriteModelFactory.getInstance(requireActivity())
     }
 
-    private val binding get() = _binding!!
-
-    private lateinit var eventFavoriteAdapter: EventLargeAdapter
-
+    private lateinit var eventsAdapter: EventLargeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        setupEventFavorite()
-        viewLifecycleOwner.lifecycleScope.launch {
-            observeViewModels()
-        }
-        return root
+        return binding.root
     }
 
-    private suspend fun observeViewModels() {
-        favoriteViewModel.getEventFavorite().observe(viewLifecycleOwner) {eventList ->
-            if (eventList.isEmpty()) {
-                eventFavoriteAdapter.submitList(emptyList())
-            } else {
-                eventFavoriteAdapter.submitList(eventList)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        observeEvents()
+    }
+
+    private fun setupRecyclerView() {
+        eventsAdapter = EventLargeAdapter(
+            onFavoriteClick = ::handleFavoriteClick,
+            onItemClick = ::navigateToDetail
+        )
+
+        binding.rvFavorite.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = eventsAdapter
+        }
+    }
+
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getFavoriteEvents().observe(viewLifecycleOwner) { events ->
+                eventsAdapter.submitList(events)
             }
         }
-        favoriteViewModel.isLoading.observe(viewLifecycleOwner) {isLoading ->
-            showLoading(isLoading)
-        }
 
+        viewModel.isLoading.observe(viewLifecycleOwner, ::showLoading)
     }
 
-    private fun setupEventFavorite() {
-        val rvEvent = binding.rvFavorite
-        rvEvent.layoutManager = LinearLayoutManager(requireContext())
-        eventFavoriteAdapter = EventLargeAdapter(
-            onFavoriteClick = { event ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    toggleFavorite(event)
-                }
-            },
-            onItemClick = { eventId -> navigateToDetail(eventId) }
-        )
-        rvEvent.adapter = eventFavoriteAdapter
-    }
-
-    private suspend fun toggleFavorite(event: EventEntity) {
-        if (event.isFavorite) {
-            favoriteViewModel.deleteEvent(event)
-        } else {
-            favoriteViewModel.saveEvent(event)
+    private fun handleFavoriteClick(event: EventEntity) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.toggleEventFavorite(event, !event.isFavorite)
         }
     }
 
@@ -86,17 +79,15 @@ class FavoriteFragment : Fragment() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    private fun navigateToDetail(eventId: Int) {
+        Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(EVENT_ID_KEY, eventId)
+            startActivity(this)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-    private fun navigateToDetail(eventId: Int) {
-        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra("EVENT_ID", eventId)
-        }
-        startActivity(intent)
-    }
-
 }

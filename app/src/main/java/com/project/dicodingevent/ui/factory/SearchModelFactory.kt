@@ -7,22 +7,27 @@ import com.project.dicodingevent.data.EventRepository
 import com.project.dicodingevent.di.Injection
 import com.project.dicodingevent.ui.model.SearchViewModel
 
-class SearchModelFactory private constructor(private val eventRepository: EventRepository) :
-    ViewModelProvider.NewInstanceFactory() {
+class SearchModelFactory private constructor(
+    private val eventRepository: EventRepository
+) : ViewModelProvider.NewInstanceFactory() {
+
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-            return SearchViewModel(eventRepository) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        when {
+            modelClass.isAssignableFrom(SearchViewModel::class.java) ->
+                SearchViewModel(eventRepository) as T
+            else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
-        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
-    }
 
     companion object {
         @Volatile
         private var instance: SearchModelFactory? = null
+
         fun getInstance(context: Context): SearchModelFactory =
             instance ?: synchronized(this) {
-                instance ?: SearchModelFactory(Injection.provideRepository(context))
-            }.also { instance = it }
+                instance ?: SearchModelFactory(
+                    Injection.provideRepository(context)
+                ).also { instance = it }
+            }
     }
 }

@@ -1,6 +1,5 @@
 package com.project.dicodingevent.ui.fragment
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,70 +20,67 @@ import kotlinx.coroutines.launch
 
 class FinishedFragment : Fragment() {
 
+    private companion object {
+        const val EVENT_ID_KEY = "EVENT_ID"
+        const val GRID_SPAN_COUNT = 2
+    }
+
     private var _binding: FragmentFinishedBinding? = null
-    private val finishedViewModel by viewModels<FinishedViewModel>{
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<FinishedViewModel> {
         FinishedModelFactory.getInstance(requireActivity())
     }
 
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var eventsAdapter: EventSmallAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentFinishedBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        setupObservers()
+    }
+
+    private fun setupRecyclerView() {
+        eventsAdapter = EventSmallAdapter(
+            onItemClick = ::navigateToDetail,
+            onFavoriteClick = ::handleFavoriteClick
+        )
 
         binding.rvEvent.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
             setHasFixedSize(true)
+            adapter = eventsAdapter
         }
-
-        finishedViewModel.listEvent.observe(viewLifecycleOwner) {eventList ->
-            setEventDataFinished(eventList)
-        }
-
-        finishedViewModel.errorMessage.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {errorMessage ->
-                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        finishedViewModel.isLoading.observe(viewLifecycleOwner) {loading ->
-            showLoading(loading)
-        }
-
-        return root
-
     }
 
-
-
-
-    private fun setEventDataFinished(listEvent: List<EventEntity>) {
-        val adapter = EventSmallAdapter(
-            onItemClick = { eventId -> navigateToDetail(eventId)},
-            onFavoriteClick = { event ->
-            viewLifecycleOwner.lifecycleScope.launch {
-                toggleFavorite(event)
+    private fun setupObservers() {
+        with(viewModel) {
+            uiState.observe(viewLifecycleOwner) { state ->
+                eventsAdapter.submitList(state.events)
             }
-        })
-        adapter.submitList(listEvent)
-        binding.rvEvent.adapter = adapter
+
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            isLoading.observe(viewLifecycleOwner, ::showLoading)
+        }
     }
 
-
-
-    private suspend fun toggleFavorite(event: EventEntity) {
-        if (event.isFavorite) {
-            finishedViewModel.deleteEvent(event)
-        } else {
-            finishedViewModel.saveEvent(event)
+    private fun handleFavoriteClick(event: EventEntity) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.toggleEventFavorite(event, !event.isFavorite)
         }
     }
 
@@ -92,15 +88,15 @@ class FinishedFragment : Fragment() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    private fun navigateToDetail(eventId: Int) {
+        Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(EVENT_ID_KEY, eventId)
+            startActivity(this)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun navigateToDetail(eventId: Int) {
-        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra("EVENT_ID", eventId)
-        }
-        startActivity(intent)
     }
 }

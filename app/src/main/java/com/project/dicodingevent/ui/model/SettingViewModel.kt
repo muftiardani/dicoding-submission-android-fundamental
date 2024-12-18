@@ -16,50 +16,62 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class SettingViewModel(private val pref: SettingPreferences) : ViewModel() {
-    fun getThemeSettings(): LiveData<Boolean> {
-        return pref.getThemeSetting().asLiveData()
+
+    private companion object {
+        const val REMINDER_WORK_NAME = "DailyReminder"
+        const val REMINDER_INTERVAL = 1L
     }
 
-    fun saveThemeSetting(isDarkModeActive: Boolean) {
+    val themeSettings: LiveData<Boolean> = pref.getThemeSetting().asLiveData()
+    val reminderSettings: LiveData<Boolean> = pref.getReminderSetting().asLiveData()
+
+    fun updateThemeSetting(isDarkModeActive: Boolean) {
         viewModelScope.launch {
             pref.saveThemeSetting(isDarkModeActive)
         }
     }
 
-    fun getReminderSetting(): LiveData<Boolean> {
-        return pref.getReminderSetting().asLiveData()
-    }
-
-
-    fun saveReminderSetting(isReminderActive: Boolean) {
+    fun updateReminderSetting(isReminderActive: Boolean) {
         viewModelScope.launch {
             pref.saveReminderSetting(isReminderActive)
         }
     }
 
-    fun scheduleDailyReminder(context: Context) {
+    fun toggleDailyReminder(context: Context, isEnabled: Boolean) {
+        if (isEnabled) {
+            scheduleDailyReminder(context)
+        } else {
+            cancelDailyReminder(context)
+        }
+    }
+
+    private fun scheduleDailyReminder(context: Context) {
         val workManager = WorkManager.getInstance(context)
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val reminderRequest = PeriodicWorkRequest.Builder(
-            ReminderWorker::class.java,
-            1, TimeUnit.DAYS
-        )
-            .setConstraints(constraints)
-            .build()
+        val reminderRequest = createReminderWorkRequest()
 
         workManager.enqueueUniquePeriodicWork(
-            "DailyReminder",
+            REMINDER_WORK_NAME,
             ExistingPeriodicWorkPolicy.REPLACE,
             reminderRequest
         )
     }
 
+    private fun createReminderWorkRequest(): PeriodicWorkRequest {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-    fun cancelDailyReminder(context: Context) {
-        val workManager = WorkManager.getInstance(context)
-        workManager.cancelUniqueWork("DailyReminder")
+        return PeriodicWorkRequest.Builder(
+            ReminderWorker::class.java,
+            REMINDER_INTERVAL,
+            TimeUnit.DAYS
+        )
+            .setConstraints(constraints)
+            .build()
     }
 
+    private fun cancelDailyReminder(context: Context) {
+        WorkManager.getInstance(context)
+            .cancelUniqueWork(REMINDER_WORK_NAME)
+    }
 }

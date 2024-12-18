@@ -1,6 +1,5 @@
 package com.project.dicodingevent.ui.model
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,13 +10,8 @@ import com.project.dicodingevent.util.EventWrapper
 
 class HomeViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
-
-
-    private val _listEventUpcoming = MutableLiveData<List<EventEntity>>()
-    val listEventUpcoming: LiveData<List<EventEntity>> = _listEventUpcoming
-
-    private val _listEventFinished = MutableLiveData<List<EventEntity>>()
-    val listEventFinished: LiveData<List<EventEntity>> = _listEventFinished
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> = _uiState
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -26,56 +20,57 @@ class HomeViewModel(private val eventRepository: EventRepository) : ViewModel() 
     val errorMessage: LiveData<EventWrapper<String>> = _errorMessage
 
     init {
+        fetchEvents()
+    }
+
+    private fun fetchEvents() {
         fetchEventUpcoming()
         fetchEventFinished()
     }
 
     private fun fetchEventUpcoming() {
         _isLoading.value = true
-
         eventRepository.fetchUpcomingEvents().observeForever { result ->
-            when (result) {
-                is Result.Loading -> _isLoading.value = true
-                is Result.Success -> {
-                    _isLoading.value = false
-                    _listEventUpcoming.value = result.data
-                }
-
-                is Result.Error -> {
-                    _isLoading.value = false
-                    _errorMessage.value = EventWrapper("Error: ${result.error}")
-                }
+            handleEventResult(result) { events ->
+                _uiState.value = _uiState.value?.copy(upcomingEvents = events)
+                    ?: UiState(upcomingEvents = events)
             }
         }
     }
-
-
 
     private fun fetchEventFinished() {
         _isLoading.value = true
-
         eventRepository.fetchFinishedEvents().observeForever { result ->
-            when (result) {
-                is Result.Loading -> _isLoading.value = true
-                is Result.Success -> {
-                    _isLoading.value = false
-                    _listEventFinished.value = result.data
-                }
-
-                is Result.Error -> {
-                    _isLoading.value = false
-                    _errorMessage.value = EventWrapper("Error: ${result.error}")
-                }
+            handleEventResult(result) { events ->
+                _uiState.value = _uiState.value?.copy(finishedEvents = events)
+                    ?: UiState(finishedEvents = events)
             }
         }
     }
 
-    suspend fun saveEvent(event: EventEntity) {
-        eventRepository.setEventFavorite(event, true)
+    private fun handleEventResult(
+        result: Result<List<EventEntity>>,
+        onSuccess: (List<EventEntity>) -> Unit
+    ) {
+        when (result) {
+            is Result.Loading -> _isLoading.value = true
+            is Result.Success -> {
+                _isLoading.value = false
+                onSuccess(result.data)
+            }
+            is Result.Error -> {
+                _isLoading.value = false
+                _errorMessage.value = EventWrapper("Error: ${result.error}")
+            }
+        }
     }
 
-    suspend fun deleteEvent(event: EventEntity) {
-        eventRepository.setEventFavorite(event, false)
+    suspend fun toggleEventFavorite(event: EventEntity, isFavorite: Boolean) {
+        eventRepository.setEventFavorite(event, isFavorite)
     }
 
+    data class UiState(
+        val upcomingEvents: List<EventEntity> = emptyList(),
+        val finishedEvents: List<EventEntity> = emptyList()
+    )
 }

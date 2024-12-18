@@ -15,31 +15,40 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
+
+    private companion object {
+        const val SPLASH_DELAY = 1000L
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupView()
+        loadThemeSetting()
+        navigateToMain()
+    }
+
+    private fun setupView() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
         supportActionBar?.hide()
-
-        loadThemeSetting()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }, 1000)
     }
 
+    private fun navigateToMain() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            Intent(this, MainActivity::class.java).also { intent ->
+                startActivity(intent)
+                finish()
+            }
+        }, SPLASH_DELAY)
+    }
 
     private fun loadThemeSetting() {
         val pref = SettingPreferences.getInstance(application.dataStore)
         lifecycleScope.launch {
-            val isDarkModeActive = pref.getThemeSetting().first()
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            when (pref.getThemeSetting().first()) {
+                true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
     }
-
 }

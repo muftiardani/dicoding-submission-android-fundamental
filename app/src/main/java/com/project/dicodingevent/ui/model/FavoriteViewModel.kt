@@ -7,17 +7,20 @@ import com.project.dicodingevent.data.EventRepository
 import com.project.dicodingevent.data.local.entity.EventEntity
 
 class FavoriteViewModel(private val eventRepository: EventRepository) : ViewModel() {
+
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> = _uiState
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    suspend fun getEventFavorite() = eventRepository.getEventFavorite()
+    suspend fun getFavoriteEvents() = eventRepository.getEventFavorite()
 
-    suspend fun deleteEvent(event: EventEntity) {
-        eventRepository.setEventFavorite(event, false)
+    suspend fun toggleEventFavorite(event: EventEntity, isFavorite: Boolean) {
+        eventRepository.setEventFavorite(event, isFavorite)
     }
 
-    suspend fun saveEvent(event: EventEntity) {
-        eventRepository.setEventFavorite(event, true)
-    }
-
+    data class UiState(
+        val favoriteEvents: List<EventEntity> = emptyList()
+    )
 }

@@ -17,67 +17,84 @@ import com.project.dicodingevent.ui.model.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySearchBinding
+    private companion object {
+        const val EVENT_ID_KEY = "EVENT_ID"
+    }
 
-    private val searchViewModel by viewModels<SearchViewModel>{
+    private lateinit var binding: ActivitySearchBinding
+    private lateinit var eventAdapter: EventSearchAdapter
+
+    private val viewModel by viewModels<SearchViewModel> {
         SearchModelFactory.getInstance(this)
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        supportActionBar?.hide()
-
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val layoutManager = LinearLayoutManager(this)
-        binding.rvEventSearch.layoutManager = layoutManager
-
-        binding.tfSearch.editText?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-                val query = binding.tfSearch.editText?.text.toString()
-                searchViewModel.fetchSearchEvent(query)
-                true
-            } else {
-                false
-            }
-        }
-
-        searchViewModel.listEvent.observe(this) { event ->
-            setEventDataSearch(event)
-        }
-
-        searchViewModel.errorMessage.observe(this) {
-            it.getContentIfNotHandled()?.let {errorMessage ->
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        searchViewModel.isLoading.observe(this) { isLoading ->
-            showLoading(isLoading)
-        }
-
-
+        setupView()
+        setupRecyclerView()
+        setupSearchField()
+        setupObservers()
     }
 
-    private fun setEventDataSearch(listEvent: List<ListEventsItem>) {
-        val adapter = EventSearchAdapter(onItemClick = { eventId -> navigateToDetail(eventId) })
-        adapter.submitList(listEvent)
-        binding.rvEventSearch.adapter = adapter
+    private fun setupView() {
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        supportActionBar?.hide()
+    }
+
+    private fun setupRecyclerView() {
+        eventAdapter = EventSearchAdapter(onItemClick = ::navigateToDetail)
+        binding.rvEventSearch.apply {
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+            adapter = eventAdapter
+        }
+    }
+
+    private fun setupSearchField() {
+        binding.tfSearch.editText?.setOnEditorActionListener { _, actionId, event ->
+            handleSearchAction(actionId, event)
+        }
+    }
+
+    private fun handleSearchAction(actionId: Int, event: KeyEvent?): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+            event?.keyCode == KeyEvent.KEYCODE_ENTER) {
+            binding.tfSearch.editText?.text?.toString()?.let { query ->
+                viewModel.searchEvents(query)
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun setupObservers() {
+        with(viewModel) {
+            uiState.observe(this@SearchActivity) { state ->
+                setEventDataSearch(state.searchResults)
+            }
+
+            errorMessage.observe(this@SearchActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@SearchActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            isLoading.observe(this@SearchActivity, ::showLoading)
+        }
+    }
+
+    private fun setEventDataSearch(events: List<ListEventsItem>) {
+        eventAdapter.submitList(events)
     }
 
     private fun navigateToDetail(eventId: Int) {
-        val intent = Intent(this@SearchActivity, DetailActivity::class.java).apply {
-            putExtra("EVENT_ID", eventId)
+        Intent(this, DetailActivity::class.java).apply {
+            putExtra(EVENT_ID_KEY, eventId)
+            startActivity(this)
         }
-        startActivity(intent)
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
-
 }

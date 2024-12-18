@@ -26,7 +26,6 @@ interface EventDao {
     @Query("SELECT * FROM events where favorite = 1 ORDER BY beginTime DESC")
     fun getEventsFavorite(): LiveData<List<EventEntity>>
 
-
     @Query("DELETE FROM events WHERE favorite = 0 AND event_status = 1")
     suspend fun deleteUpcomingAll()
 

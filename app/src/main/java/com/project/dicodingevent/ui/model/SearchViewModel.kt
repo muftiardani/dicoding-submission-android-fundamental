@@ -8,12 +8,10 @@ import com.project.dicodingevent.data.Result
 import com.project.dicodingevent.data.remote.response.ListEventsItem
 import com.project.dicodingevent.util.EventWrapper
 
+class SearchViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
-class SearchViewModel(private val eventRepository: EventRepository): ViewModel() {
-
-
-    private val _listEvent = MutableLiveData<List<ListEventsItem>>()
-    val listEvent: LiveData<List<ListEventsItem>> = _listEvent
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> = _uiState
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -21,24 +19,30 @@ class SearchViewModel(private val eventRepository: EventRepository): ViewModel()
     private val _errorMessage = MutableLiveData<EventWrapper<String>>()
     val errorMessage: LiveData<EventWrapper<String>> = _errorMessage
 
-
-    fun fetchSearchEvent(query: String) {
+    fun searchEvents(query: String) {
         _isLoading.value = true
-
         eventRepository.fetchSearchEvent(query).observeForever { result ->
-            when (result) {
-                is Result.Loading -> _isLoading.value = true
-                is Result.Success -> {
-                    _isLoading.value = false
-                    _listEvent.value = result.data
-                }
+            handleResult(result)
+        }
+    }
 
-                is Result.Error -> {
-                    _isLoading.value = false
-                    _errorMessage.value = EventWrapper("Error: ${result.error}")
-                }
+    private fun handleResult(result: Result<List<ListEventsItem>>) {
+        when (result) {
+            is Result.Loading -> {
+                _isLoading.value = true
+            }
+            is Result.Success -> {
+                _isLoading.value = false
+                _uiState.value = UiState(searchResults = result.data)
+            }
+            is Result.Error -> {
+                _isLoading.value = false
+                _errorMessage.value = EventWrapper("Error: ${result.error}")
             }
         }
     }
 
+    data class UiState(
+        val searchResults: List<ListEventsItem> = emptyList()
+    )
 }

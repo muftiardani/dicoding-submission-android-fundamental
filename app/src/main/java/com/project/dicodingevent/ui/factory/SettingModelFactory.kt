@@ -5,13 +5,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.project.dicodingevent.data.local.datastore.SettingPreferences
 import com.project.dicodingevent.ui.model.SettingViewModel
 
-class SettingModelFactory(private val pref: SettingPreferences) : ViewModelProvider.NewInstanceFactory() {
+class SettingModelFactory(
+    private val pref: SettingPreferences
+) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SettingViewModel::class.java)) {
-            return SettingViewModel(pref) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        when {
+            modelClass.isAssignableFrom(SettingViewModel::class.java) ->
+                SettingViewModel(pref) as T
+            else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
-        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
-    }
 }

@@ -7,23 +7,27 @@ import com.project.dicodingevent.data.EventRepository
 import com.project.dicodingevent.di.Injection
 import com.project.dicodingevent.ui.model.DetailViewModel
 
-class DetailModelFactory private constructor(private val eventRepository: EventRepository) :
-    ViewModelProvider.NewInstanceFactory() {
+class DetailModelFactory private constructor(
+    private val eventRepository: EventRepository
+) : ViewModelProvider.NewInstanceFactory() {
+
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            return DetailViewModel(eventRepository) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        when {
+            modelClass.isAssignableFrom(DetailViewModel::class.java) ->
+                DetailViewModel(eventRepository) as T
+            else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
-        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
-    }
 
     companion object {
         @Volatile
         private var instance: DetailModelFactory? = null
+
         fun getInstance(context: Context): DetailModelFactory =
             instance ?: synchronized(this) {
-                instance ?: DetailModelFactory(Injection.provideRepository(context))
-            }.also { instance = it }
+                instance ?: DetailModelFactory(
+                    Injection.provideRepository(context)
+                ).also { instance = it }
+            }
     }
-
 }

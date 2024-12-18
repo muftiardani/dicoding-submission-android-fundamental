@@ -8,11 +8,10 @@ import com.project.dicodingevent.data.Result
 import com.project.dicodingevent.data.remote.response.EventDetailResponse
 import com.project.dicodingevent.util.EventWrapper
 
-class DetailViewModel(private val eventRepository: EventRepository): ViewModel() {
+class DetailViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
-
-    private val _eventDetail = MutableLiveData<EventDetailResponse>()
-    val eventDetail: LiveData<EventDetailResponse> = _eventDetail
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> = _uiState
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -20,22 +19,30 @@ class DetailViewModel(private val eventRepository: EventRepository): ViewModel()
     private val _errorMessage = MutableLiveData<EventWrapper<String>>()
     val errorMessage: LiveData<EventWrapper<String>> = _errorMessage
 
-    fun fetchDetailEvent(id: Int) {
+    fun fetchEventDetail(id: Int) {
         _isLoading.value = true
-
         eventRepository.fetchEventDetail(id).observeForever { result ->
-            when (result) {
-                is Result.Loading -> _isLoading.value = true
-                is Result.Success -> {
-                    _isLoading.value = false
-                    _eventDetail.value = result.data
-                }
+            handleResult(result)
+        }
+    }
 
-                is Result.Error -> {
-                    _isLoading.value = false
-                    _errorMessage.value = EventWrapper("Error ${result.error}")
-                }
+    private fun handleResult(result: Result<EventDetailResponse>) {
+        when (result) {
+            is Result.Loading -> {
+                _isLoading.value = true
+            }
+            is Result.Success -> {
+                _isLoading.value = false
+                _uiState.value = UiState(eventDetail = result.data)
+            }
+            is Result.Error -> {
+                _isLoading.value = false
+                _errorMessage.value = EventWrapper("Error: ${result.error}")
             }
         }
     }
+
+    data class UiState(
+        val eventDetail: EventDetailResponse? = null
+    )
 }

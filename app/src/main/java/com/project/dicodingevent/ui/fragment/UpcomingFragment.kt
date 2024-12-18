@@ -20,84 +20,82 @@ import kotlinx.coroutines.launch
 
 class UpcomingFragment : Fragment() {
 
-    private var _binding: FragmentUpcomingBinding? = null
+    private companion object {
+        const val EVENT_ID_KEY = "EVENT_ID"
+    }
 
-    private val upcomingViewModel by viewModels<UpcomingViewModel>{
+    private var _binding: FragmentUpcomingBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<UpcomingViewModel> {
         UpcomingModelFactory.getInstance(requireActivity())
     }
 
-    private val binding get() = _binding!!
+    private lateinit var eventsAdapter: EventLargeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         _binding = FragmentUpcomingBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        setupObservers()
+    }
+
+    private fun setupRecyclerView() {
+        eventsAdapter = EventLargeAdapter(
+            onItemClick = ::navigateToDetail,
+            onFavoriteClick = ::handleFavoriteClick
+        )
 
         binding.rvEvent.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             setHasFixedSize(true)
+            adapter = eventsAdapter
         }
-
-
-        upcomingViewModel.listEvent.observe(viewLifecycleOwner) { eventList ->
-            setEventDataUpcoming(eventList)
-        }
-
-        upcomingViewModel.errorMessage.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {errorMessage ->
-                Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
-        }
-
-        return root
     }
 
+    private fun setupObservers() {
+        with(viewModel) {
+            uiState.observe(viewLifecycleOwner) { state ->
+                eventsAdapter.submitList(state.upcomingEvents)
+            }
 
-    private fun setEventDataUpcoming(listEvent: List<EventEntity>) {
-        val adapter = EventLargeAdapter(
-            onItemClick = { eventId -> navigateToDetail(eventId)},
-            onFavoriteClick = { event ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    toggleFavorite(event)
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
                 }
             }
-        )
 
-        adapter.submitList(listEvent)
-        binding.rvEvent.adapter = adapter
+            isLoading.observe(viewLifecycleOwner, ::showLoading)
+        }
+    }
+
+    private fun handleFavoriteClick(event: EventEntity) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.toggleEventFavorite(event, !event.isFavorite)
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    private fun navigateToDetail(eventId: Int) {
+        Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(EVENT_ID_KEY, eventId)
+            startActivity(this)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    private suspend fun toggleFavorite(event: EventEntity) {
-        if (event.isFavorite) {
-            upcomingViewModel.deleteEvent(event)
-        } else {
-            upcomingViewModel.saveEvent(event)
-        }
-    }
-
-    private fun navigateToDetail(eventId: Int) {
-        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra("EVENT_ID", eventId)
-        }
-        startActivity(intent)
-    }
-
 }
