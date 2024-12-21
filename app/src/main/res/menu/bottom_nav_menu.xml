@@ -9,21 +9,16 @@
     <item
         android:id="@+id/navigationUpcoming"
         android:icon="@drawable/baseline_event_24"
-        android:title="@string/title_upcoming"/>
+        android:title="@string/upcoming" />
 
     <item
         android:id="@+id/navigationFinished"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_finished" />
+        android:title="@string/finished" />
 
     <item
         android:id="@+id/navigationFavorite"
-        android:icon="@drawable/baseline_favorite_24"
-        android:title="@string/title_favorite"/>
-
-    <item
-        android:id="@+id/navigationSetting"
-        android:icon="@drawable/baseline_settings_24"
-        android:title="@string/title_setting"/>
+        android:icon="@drawable/ic_favorite_active"
+        android:title="@string/favorite" />
 
 </menu>
