@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class FavoriteViewModelFactory(
-    private val application: Application,
+    private val application: Application
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -13,6 +13,10 @@ class FavoriteViewModelFactory(
             @Suppress("UNCHECKED_CAST")
             return FavoriteViewModel(application) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+
+    companion object {
+        private const val TAG = "FavoriteViewModelFactory"
     }
 }

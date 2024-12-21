@@ -18,7 +18,7 @@
         android:padding="8dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_item_photo"
+            android:id="@+id/imgItemPhoto"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
@@ -29,7 +29,7 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tv_item_name"
+            android:id="@+id/tvItemName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -37,41 +37,41 @@
             android:textSize="16sp"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toEndOf="@+id/img_item_photo"
-            card_view:layout_constraintTop_toTopOf="@+id/img_item_photo"
+            card_view:layout_constraintStart_toEndOf="@+id/imgItemPhoto"
+            card_view:layout_constraintTop_toTopOf="@+id/imgItemPhoto"
             tools:text="The Shawsank Redemption" />
 
         <TextView
-            android:id="@+id/tv_location"
+            android:id="@+id/tvLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/online"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"
             card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toEndOf="@+id/tv_item_name" />
+            card_view:layout_constraintEnd_toEndOf="@+id/tvItemName" />
 
         <ImageView
-            android:id="@+id/iv_location"
+            android:id="@+id/ivLocation"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="4dp"
             android:contentDescription="@string/location_icon"
             android:src="@drawable/ic_location"
-            card_view:layout_constraintBottom_toBottomOf="@+id/tv_location"
-            card_view:layout_constraintEnd_toStartOf="@+id/tv_location"
-            card_view:layout_constraintTop_toTopOf="@+id/tv_location" />
+            card_view:layout_constraintBottom_toBottomOf="@+id/tvLocation"
+            card_view:layout_constraintEnd_toStartOf="@+id/tvLocation"
+            card_view:layout_constraintTop_toTopOf="@+id/tvLocation" />
 
         <TextView
-            android:id="@+id/tv_quota"
+            android:id="@+id/tvQuota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:textSize="14sp"
             card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toStartOf="@+id/iv_location"
-            card_view:layout_constraintTop_toTopOf="@+id/tv_location" />
+            card_view:layout_constraintEnd_toStartOf="@+id/ivLocation"
+            card_view:layout_constraintTop_toTopOf="@+id/tvLocation" />
 
     <ImageView
         android:layout_width="24dp"
@@ -79,9 +79,9 @@
         android:layout_marginEnd="4dp"
         android:contentDescription="@string/quota_icon"
         android:src="@drawable/ic_people"
-        card_view:layout_constraintBottom_toBottomOf="@+id/tv_quota"
-        card_view:layout_constraintEnd_toStartOf="@+id/tv_quota"
-        card_view:layout_constraintTop_toTopOf="@+id/tv_quota" />
+        card_view:layout_constraintBottom_toBottomOf="@+id/tvQuota"
+        card_view:layout_constraintEnd_toStartOf="@+id/tvQuota"
+        card_view:layout_constraintTop_toTopOf="@+id/tvQuota" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

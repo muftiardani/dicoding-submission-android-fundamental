@@ -12,7 +12,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class FinishedViewModel : ViewModel() {
+    companion object {
+        private const val TAG = "FinishedViewModel"
+        private const val FINISHED_ID = "0"
+    }
 
+    // UI State
     private val _listEvent = MutableLiveData<List<ListEventsItem>>()
     val listEvent: LiveData<List<ListEventsItem>> = _listEvent
 
@@ -22,61 +27,55 @@ class FinishedViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    companion object {
-        private const val TAG = "UpcomingViewModel"
-        private const val FINISHED_ID = "0"
-    }
-
     init {
         showFinishedEvents()
     }
 
     fun showFinishedEvents() {
+        fetchEvents(ApiConfig.getApiService().getEvents(FINISHED_ID))
+    }
+
+    fun searchEvents(query: String) {
+        fetchEvents(ApiConfig.getApiService().searchEvents(query))
+    }
+
+    private fun fetchEvents(call: Call<EventResponse>) {
         _isLoading.value = true
         _errorMessage.value = null
-        val client = ApiConfig.getApiService().getEvents(FINISHED_ID)
-        client.enqueue(object : Callback<EventResponse> {
+
+        call.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        _listEvent.value = response.body()?.listEvents
-                    } else {
-                        _errorMessage.value = "Data tidak ditemukan"
-                    }
-                } else {
-                    _errorMessage.value = "Gagal memuat data: ${response.message()}"
-                    Log.e(TAG, "onResponse: ${response.message()}")
-                }
+                handleResponse(response)
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = "Gagal memuat data: ${t.message}"
-                Log.e(TAG, "onFailure: ${t.message}")
+                handleError(t)
             }
         })
     }
 
-    fun searchEvents(query: String) {
-        _isLoading.value = true
-        _errorMessage.value = null
-        val client = ApiConfig.getApiService().searchEvents(query)
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    _listEvent.value = response.body()?.listEvents ?: emptyList()
-                } else {
-                    _errorMessage.value = "Gagal memuat data: ${response.message()}"
-                }
+    private fun handleResponse(response: Response<EventResponse>) {
+        _isLoading.value = false
+        if (response.isSuccessful) {
+            val responseBody = response.body()
+            if (responseBody != null) {
+                _listEvent.value = responseBody.listEvents
+            } else {
+                _errorMessage.value = "Data tidak ditemukan"
             }
+        } else {
+            handleApiError(response)
+        }
+    }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = "Gagal memuat data: ${t.message}"
-            }
-        })
+    private fun handleApiError(response: Response<EventResponse>) {
+        _errorMessage.value = "Gagal memuat data: ${response.message()}"
+        Log.e(TAG, "API Error: ${response.message()}")
+    }
+
+    private fun handleError(throwable: Throwable) {
+        _isLoading.value = false
+        _errorMessage.value = "Gagal memuat data: ${throwable.message}"
+        Log.e(TAG, "Network Error: ${throwable.message}")
     }
 }

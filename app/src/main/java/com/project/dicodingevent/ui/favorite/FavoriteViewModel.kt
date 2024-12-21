@@ -7,9 +7,14 @@ import com.project.dicodingevent.data.database.FavoriteEvent
 import com.project.dicodingevent.data.repository.FavoriteEventRepository
 
 class FavoriteViewModel(application: Application) : ViewModel() {
-    private val mFavoriteEventRepository: FavoriteEventRepository = FavoriteEventRepository(application)
+    // Repository
+    private val favoriteEventRepository = FavoriteEventRepository(application)
 
-    fun getFavoriteEvents(): LiveData<List<FavoriteEvent>> {
-        return mFavoriteEventRepository.getAllFavoriteEvents()
+    // Public Methods
+    fun getFavoriteEvents(): LiveData<List<FavoriteEvent>> =
+        favoriteEventRepository.getAllFavoriteEvents()
+
+    companion object {
+        private const val TAG = "FavoriteViewModel"
     }
 }

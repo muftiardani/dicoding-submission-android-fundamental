@@ -7,14 +7,20 @@ import androidx.lifecycle.viewModelScope
 import com.project.dicodingevent.data.preferences.DarkModePreferences
 import kotlinx.coroutines.launch
 
-class SettingViewModel(private val pref: DarkModePreferences) : ViewModel(){
-    fun getThemeSettings(): LiveData<Boolean> {
-        return pref.getThemeSetting().asLiveData()
-    }
+class SettingViewModel(
+    private val darkModePreferences: DarkModePreferences
+) : ViewModel() {
+    // Theme Settings
+    fun getThemeSettings(): LiveData<Boolean> =
+        darkModePreferences.getThemeSetting().asLiveData()
 
     fun saveThemeSetting(isDarkModeActive: Boolean) {
         viewModelScope.launch {
-            pref.saveThemeSetting(isDarkModeActive)
+            darkModePreferences.saveThemeSetting(isDarkModeActive)
         }
+    }
+
+    companion object {
+        private const val TAG = "SettingViewModel"
     }
 }

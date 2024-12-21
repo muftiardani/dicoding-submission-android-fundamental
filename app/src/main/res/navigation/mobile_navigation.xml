@@ -2,10 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigationHome">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigationHome"
         android:name="com.project.dicodingevent.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
@@ -15,7 +15,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_upcoming"
+        android:id="@+id/navigationUpcoming"
         android:name="com.project.dicodingevent.ui.upcoming.UpcomingFragment"
         android:label="@string/upcoming"
         tools:layout="@layout/fragment_upcoming" >
@@ -25,7 +25,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_finished"
+        android:id="@+id/navigationFinished"
         android:name="com.project.dicodingevent.ui.finished.FinishedFragment"
         android:label="@string/finished"
         tools:layout="@layout/fragment_finished" >
@@ -34,7 +34,7 @@
             app:destination="@id/detailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_favorite"
+        android:id="@+id/navigationFavorite"
         android:name="com.project.dicodingevent.ui.favorite.FavoriteFragment"
         android:label="favoriteFragment"
         tools:layout="@layout/fragment_favorite" >

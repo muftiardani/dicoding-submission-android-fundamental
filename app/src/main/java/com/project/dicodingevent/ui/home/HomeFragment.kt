@@ -12,12 +12,18 @@ import com.project.dicodingevent.data.response.ListEventsItem
 import com.project.dicodingevent.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
-
+    // View Binding
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    // ViewModel
     private val homeViewModel by viewModels<HomeViewModel>()
 
+    // Adapters
+    private lateinit var carouselAdapter: HomeCarouselAdapter
+    private lateinit var finishedAdapter: HomeFinishedAdapter
 
+    // Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,67 +35,73 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        homeViewModel.listEvent.observe(viewLifecycleOwner) { upcomingEvents ->
-            setCarouselData(upcomingEvents)
-        }
-
-        val layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rvCarousel.layoutManager = layoutManager
-
-        homeViewModel.finishedEvent.observe(viewLifecycleOwner) { finishedEvents ->
-            setFinishedEventData(finishedEvents)
-        }
-
-        val finishedLayoutManager = LinearLayoutManager(requireContext())
-        binding.rvFinished.layoutManager = finishedLayoutManager
-
-        homeViewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-
-        homeViewModel.isRvLoading.observe(viewLifecycleOwner) {
-            showRvLoading(it)
-        }
-
-        homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            if (errorMessage != null) {
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun setCarouselData(eventsItem: List<ListEventsItem>) {
-        val adapter = HomeCarouselAdapter()
-        adapter.submitList(eventsItem)
-        binding.rvCarousel.adapter = adapter
-    }
-
-    private fun setFinishedEventData(eventsItem: List<ListEventsItem>) {
-        val adapter = HomeFinishedAdapter()
-        adapter.submitList(eventsItem)
-        binding.rvFinished.adapter = adapter
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun showRvLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBarRv.visibility = View.VISIBLE
-        } else {
-            binding.progressBarRv.visibility = View.INVISIBLE
-        }
+        setupRecyclerViews()
+        setupObservers()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Setup Methods
+    private fun setupRecyclerViews() {
+        setupCarouselRecyclerView()
+        setupFinishedRecyclerView()
+    }
+
+    private fun setupCarouselRecyclerView() {
+        carouselAdapter = HomeCarouselAdapter()
+        binding.rvCarousel.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = carouselAdapter
+        }
+    }
+
+    private fun setupFinishedRecyclerView() {
+        finishedAdapter = HomeFinishedAdapter()
+        binding.rvFinished.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = finishedAdapter
+        }
+    }
+
+    private fun setupObservers() {
+        with(homeViewModel) {
+            listEvent.observe(viewLifecycleOwner) { events ->
+                carouselAdapter.submitList(events)
+            }
+
+            finishedEvent.observe(viewLifecycleOwner) { events ->
+                finishedAdapter.submitList(events)
+            }
+
+            isLoading.observe(viewLifecycleOwner) { isLoading ->
+                showLoading(isLoading)
+            }
+
+            isRvLoading.observe(viewLifecycleOwner) { isLoading ->
+                showRvLoading(isLoading)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+                errorMessage?.let {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    // UI Methods
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
+    }
+
+    private fun showRvLoading(isLoading: Boolean) {
+        binding.progressBarRv.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
     }
 }

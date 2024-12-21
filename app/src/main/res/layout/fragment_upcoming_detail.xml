@@ -13,14 +13,14 @@
         android:layout_marginEnd="16dp"
         android:text="@string/registrasi"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fab_favorite"
-        app:layout_constraintEnd_toStartOf="@+id/fab_favorite"
+        app:layout_constraintBottom_toBottomOf="@+id/fabFavorite"
+        app:layout_constraintEnd_toStartOf="@+id/fabFavorite"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fab_favorite" />
+        app:layout_constraintTop_toTopOf="@+id/fabFavorite" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_favorite"
+        android:id="@+id/fabFavorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -57,7 +57,7 @@
                 tools:src="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/tv_event_name"
+                android:id="@+id/tvEventName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -66,7 +66,7 @@
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <TextView
-                android:id="@+id/tv_event_admin"
+                android:id="@+id/tvEventAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -80,7 +80,7 @@
 
 
             <TextView
-                android:id="@+id/tv_event_date"
+                android:id="@+id/tvEventDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -92,7 +92,7 @@
                 app:drawableStartCompat="@drawable/ic_calendar_month" />
 
             <TextView
-                android:id="@+id/tv_event_location"
+                android:id="@+id/tvEventLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -105,7 +105,7 @@
 
 
             <TextView
-                android:id="@+id/tv_event_quota"
+                android:id="@+id/tvEventQuota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -117,7 +117,7 @@
                 app:drawableStartCompat="@drawable/ic_people" />
 
             <TextView
-                android:id="@+id/tv_event_description"
+                android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

@@ -10,7 +10,7 @@
     card_view:cardCornerRadius="24dp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_item_photo"
+        android:id="@+id/imgItemPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 
 class DetailViewModelFactory(
     private val eventId: String,
-    private val application: Application,
+    private val application: Application
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -14,6 +14,10 @@ class DetailViewModelFactory(
             @Suppress("UNCHECKED_CAST")
             return DetailViewModel(eventId, application) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+
+    companion object {
+        private const val TAG = "DetailViewModelFactory"
     }
 }

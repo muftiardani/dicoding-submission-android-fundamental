@@ -1,46 +1,42 @@
 package com.project.dicodingevent.util
 
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
-class FormatTime {
+object FormatTime {
+    // Constants
+    private const val INPUT_FORMAT = "yyyy-MM-dd HH:mm:ss"
+    private const val DATE_TIME_FORMAT = "HH:mm EEEE, dd/MM/yyyy"
+    private const val DATE_ONLY_FORMAT = "EEEE, dd/MM/yyyy"
+    private const val TIME_ONLY_FORMAT = "HH:mm"
 
-    companion object {
-        fun formatWithHour(time: String?): String {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("HH:mm EEEE, dd/MM/yyyy", Locale("id", "ID"))
-            val date: Date? = inputFormat.parse(time.toString())
+    // Locale settings
+    private val defaultLocale = Locale.getDefault()
+    private val indonesianLocale = Locale("id", "ID")
 
-            return if (date != null) {
-                outputFormat.format(date)
-            } else {
-                ""
-            }
-        }
+    // Date formatters
+    private val inputFormatter = SimpleDateFormat(INPUT_FORMAT, defaultLocale)
+    private val dateTimeFormatter = SimpleDateFormat(DATE_TIME_FORMAT, indonesianLocale)
+    private val dateOnlyFormatter = SimpleDateFormat(DATE_ONLY_FORMAT, indonesianLocale)
+    private val timeOnlyFormatter = SimpleDateFormat(TIME_ONLY_FORMAT, indonesianLocale)
 
-        fun formatDateOnly(time: String?): String {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("EEEE, dd/MM/yyyy", Locale("id", "ID"))
-            val date: Date? = inputFormat.parse(time.toString())
+    fun formatWithHour(time: String?): String =
+        parseAndFormat(time, dateTimeFormatter)
 
-            return if (date != null) {
-                outputFormat.format(date)
-            } else {
-                ""
-            }
-        }
+    fun formatDateOnly(time: String?): String =
+        parseAndFormat(time, dateOnlyFormatter)
 
-        fun getHour(time: String?): String {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("HH:mm", Locale("id", "ID"))
-            val date: Date? = inputFormat.parse(time.toString())
+    fun getHour(time: String?): String =
+        parseAndFormat(time, timeOnlyFormatter)
 
-            return if (date != null) {
-                outputFormat.format(date)
-            } else {
-                ""
-            }
+    private fun parseAndFormat(time: String?, outputFormatter: SimpleDateFormat): String {
+        if (time == null) return ""
+
+        return try {
+            val date = inputFormatter.parse(time)
+            date?.let { outputFormatter.format(it) } ?: ""
+        } catch (e: Exception) {
+            ""
         }
     }
 }

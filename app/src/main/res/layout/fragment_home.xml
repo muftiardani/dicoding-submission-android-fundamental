@@ -11,11 +11,11 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_carousel"
+        app:layout_constraintBottom_toBottomOf="@+id/rvCarousel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_carousel"
+        app:layout_constraintTop_toTopOf="@+id/rvCarousel"
         app:layout_constraintVertical_bias="0.5" />
 
     <ProgressBar
@@ -23,15 +23,15 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/rv_finished"
+        app:layout_constraintBottom_toBottomOf="@id/rvFinished"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_finished"
+        app:layout_constraintTop_toTopOf="@+id/rvFinished"
         app:layout_constraintVertical_bias="0.5" />
 
     <TextView
-        android:id="@+id/tv_upcoming"
+        android:id="@+id/tvUpcoming"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_carousel"
+        android:id="@+id/rvCarousel"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_marginTop="16dp"
@@ -51,11 +51,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_upcoming"
+        app:layout_constraintTop_toBottomOf="@+id/tvUpcoming"
         tools:listitem="@layout/item_carousel_event" />
 
     <TextView
-        android:id="@+id/tv_finished"
+        android:id="@+id/tvFinished"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -64,14 +64,14 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_carousel"
+        app:layout_constraintTop_toBottomOf="@id/rvCarousel"
         app:layout_goneMarginTop="24dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_finished"
+        android:id="@+id/rvFinished"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_finished"
+        app:layout_constraintTop_toBottomOf="@id/tvFinished"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

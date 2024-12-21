@@ -1,34 +1,44 @@
 package com.project.dicodingevent.data.repository
 
-import com.project.dicodingevent.data.database.FavoriteEvent
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.project.dicodingevent.data.database.FavoriteEvent
 import com.project.dicodingevent.data.database.FavoriteEventDao
 import com.project.dicodingevent.data.database.FavoriteEventDatabase
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class FavoriteEventRepository(application: Application) {
-    private val mFavoriteEventDao: FavoriteEventDao
+    // Database and Executor
+    private val favoriteEventDao: FavoriteEventDao
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
 
     init {
-        val db = FavoriteEventDatabase.getDatabase(application)
-        mFavoriteEventDao = db.favoriteEventDao()
+        val database = FavoriteEventDatabase.getDatabase(application)
+        favoriteEventDao = database.favoriteEventDao()
     }
 
+    // Database Operations
     fun getAllFavoriteEvents(): LiveData<List<FavoriteEvent>> =
-        mFavoriteEventDao.getAllFavoriteEvents()
+        favoriteEventDao.getAllFavoriteEvents()
+
+    fun getFavoriteEventById(id: String): LiveData<FavoriteEvent> =
+        favoriteEventDao.getFavoriteEventById(id)
 
     fun insert(favoriteEvent: FavoriteEvent) {
-        executorService.execute { mFavoriteEventDao.insert(favoriteEvent) }
-    }
-
-    fun getFavoriteEventById(id: String): LiveData<FavoriteEvent> {
-        return mFavoriteEventDao.getFavoriteEventById(id)
+        executeInBackground { favoriteEventDao.insert(favoriteEvent) }
     }
 
     fun delete(favoriteEvent: FavoriteEvent) {
-        executorService.execute { mFavoriteEventDao.delete(favoriteEvent) }
+        executeInBackground { favoriteEventDao.delete(favoriteEvent) }
+    }
+
+    // Helper Methods
+    private fun executeInBackground(operation: () -> Unit) {
+        executorService.execute { operation() }
+    }
+
+    companion object {
+        private const val TAG = "FavoriteEventRepository"
     }
 }

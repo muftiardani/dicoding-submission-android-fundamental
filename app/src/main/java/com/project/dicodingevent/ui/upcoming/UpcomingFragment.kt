@@ -12,11 +12,17 @@ import com.project.dicodingevent.data.response.ListEventsItem
 import com.project.dicodingevent.databinding.FragmentUpcomingBinding
 
 class UpcomingFragment : Fragment() {
-
+    // View Binding
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
+
+    // ViewModel
     private val upcomingViewModel by viewModels<UpcomingViewModel>()
 
+    // Adapter
+    private lateinit var upcomingAdapter: UpcomingAdapter
+
+    // Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,41 +34,44 @@ class UpcomingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        upcomingViewModel.listEvent.observe(viewLifecycleOwner) { upcomingEvents ->
-            setUpcomingEventData(upcomingEvents)
-        }
-
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.rvListEvent.layoutManager = layoutManager
-
-        upcomingViewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-
-        upcomingViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            if (errorMessage != null) {
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun setUpcomingEventData(eventsItem: List<ListEventsItem>) {
-        val adapter = UpcomingAdapter()
-        adapter.submitList(eventsItem)
-        binding.rvListEvent.adapter = adapter
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.INVISIBLE
-        }
+        setupRecyclerView()
+        setupObservers()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Setup Methods
+    private fun setupRecyclerView() {
+        upcomingAdapter = UpcomingAdapter()
+        binding.rvListEvent.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = upcomingAdapter
+        }
+    }
+
+    private fun setupObservers() {
+        with(upcomingViewModel) {
+            listEvent.observe(viewLifecycleOwner) { events ->
+                upcomingAdapter.submitList(events)
+            }
+
+            isLoading.observe(viewLifecycleOwner) { isLoading ->
+                showLoading(isLoading)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+                errorMessage?.let {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    // UI Methods
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
     }
 }

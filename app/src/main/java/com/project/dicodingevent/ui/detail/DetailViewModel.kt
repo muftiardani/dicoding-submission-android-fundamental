@@ -15,14 +15,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DetailViewModel(eventId: String, application: Application) : ViewModel() {
-    private val mFavoriteEventRepository: FavoriteEventRepository =
-        FavoriteEventRepository(application)
+    companion object {
+        private const val TAG = "DetailViewModel"
+    }
 
+    // Repository
+    private val favoriteEventRepository: FavoriteEventRepository = FavoriteEventRepository(application)
+
+    // LiveData for UI states
     private val _event = MutableLiveData<Event>()
     val event: LiveData<Event> = _event
-
-    private val _favoriteEvent = mFavoriteEventRepository.getFavoriteEventById(eventId)
-    val favoriteEvent: LiveData<FavoriteEvent> = _favoriteEvent
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -30,51 +32,59 @@ class DetailViewModel(eventId: String, application: Application) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    companion object {
-        private const val TAG = "UpcomingDetailViewModel"
-    }
+    // Favorite event LiveData
+    private val _favoriteEvent = favoriteEventRepository.getFavoriteEventById(eventId)
+    val favoriteEvent: LiveData<FavoriteEvent> = _favoriteEvent
 
     init {
-        findEvent(eventId)
+        fetchEventDetail(eventId)
     }
 
-    private fun findEvent(eventId: String) {
+    // Network operations
+    private fun fetchEventDetail(eventId: String) {
         _isLoading.value = true
         _errorMessage.value = null
-        val client = ApiConfig.getApiService().getDetailEvent(eventId)
-        client.enqueue(object : Callback<DetailEventResponse> {
+
+        ApiConfig.getApiService().getDetailEvent(eventId).enqueue(object : Callback<DetailEventResponse> {
             override fun onResponse(
                 call: Call<DetailEventResponse>,
                 response: Response<DetailEventResponse>
             ) {
                 _isLoading.value = false
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        _event.value = responseBody.event
-                    } else {
-                        _errorMessage.value = "Data tidak ditemukan"
-                    }
-                } else {
-                    _errorMessage.value = "Gagal memuat data: ${response.message()}"
-                }
+                handleEventResponse(response)
             }
 
             override fun onFailure(call: Call<DetailEventResponse>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = "Gagal memuat data: ${t.message}"
-                Log.e(TAG, "onFailure: ${t.message}")
+                handleEventError(t)
             }
-
         })
     }
 
+    private fun handleEventResponse(response: Response<DetailEventResponse>) {
+        if (response.isSuccessful) {
+            val responseBody = response.body()
+            if (responseBody != null) {
+                _event.value = responseBody.event
+            } else {
+                _errorMessage.value = "Data tidak ditemukan"
+            }
+        } else {
+            _errorMessage.value = "Gagal memuat data: ${response.message()}"
+        }
+    }
 
+    private fun handleEventError(throwable: Throwable) {
+        _isLoading.value = false
+        _errorMessage.value = "Gagal memuat data: ${throwable.message}"
+        Log.e(TAG, "Network error: ${throwable.message}")
+    }
+
+    // Database operations
     fun insert(favoriteEvent: FavoriteEvent) {
-        mFavoriteEventRepository.insert(favoriteEvent)
+        favoriteEventRepository.insert(favoriteEvent)
     }
 
     fun deleteFavorite(favoriteEvent: FavoriteEvent) {
-        mFavoriteEventRepository.delete(favoriteEvent)
+        favoriteEventRepository.delete(favoriteEvent)
     }
 }
