@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.project.dicodingevent.data.response.ListEventsItem
 import com.project.dicodingevent.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {

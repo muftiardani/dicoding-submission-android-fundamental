@@ -16,8 +16,4 @@ class DetailViewModelFactory(
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
-
-    companion object {
-        private const val TAG = "DetailViewModelFactory"
-    }
 }

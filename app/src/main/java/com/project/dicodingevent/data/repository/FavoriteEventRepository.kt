@@ -37,8 +37,4 @@ class FavoriteEventRepository(application: Application) {
     private fun executeInBackground(operation: () -> Unit) {
         executorService.execute { operation() }
     }
-
-    companion object {
-        private const val TAG = "FavoriteEventRepository"
-    }
 }

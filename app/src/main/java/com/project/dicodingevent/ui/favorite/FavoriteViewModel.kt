@@ -13,8 +13,4 @@ class FavoriteViewModel(application: Application) : ViewModel() {
     // Public Methods
     fun getFavoriteEvents(): LiveData<List<FavoriteEvent>> =
         favoriteEventRepository.getAllFavoriteEvents()
-
-    companion object {
-        private const val TAG = "FavoriteViewModel"
-    }
 }

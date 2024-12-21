@@ -47,14 +47,14 @@ class DetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null  // Properly clean up binding reference
     }
 
     // Setup Methods
     private fun setupObservers() {
         with(detailViewModel) {
             event.observe(viewLifecycleOwner) { eventData ->
-                setEventData(eventData)
+                eventData?.let { setEventData(it) }
             }
 
             errorMessage.observe(viewLifecycleOwner) { errorMessage ->
@@ -74,7 +74,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun setupFavoriteButton(favoriteEvent: FavoriteEvent?) {
-        with(binding.fabFavorite) {
+        binding.fabFavorite.apply {
             if (favoriteEvent != null) {
                 setImageResource(R.drawable.ic_favorite_active)
                 setOnClickListener {
@@ -97,19 +97,17 @@ class DetailFragment : Fragment() {
         val eventTime = "${FormatTime.getHour(event.beginTime)} - ${FormatTime.formatWithHour(event.endTime)}"
 
         with(binding) {
-            tvEventName.text = event.name
-            tvEventAdmin.text = event.ownerName
-            tvEventLocation.text = event.cityName
+            tvEventName.text = event.name.orEmpty()
+            tvEventAdmin.text = event.ownerName.orEmpty()
+            tvEventLocation.text = event.cityName.orEmpty()
             tvEventDate.text = eventTime
-            tvEventQuota.text = if (remainingQuota == 0) {
-                context?.getString(R.string.quota_full)
-            } else {
-                context?.getString(R.string.remaining_quota, remainingQuota)
+            tvEventQuota.text = when {
+                remainingQuota == 0 -> context?.getString(R.string.quota_full)
+                else -> context?.getString(R.string.remaining_quota, remainingQuota)
             }
 
             tvEventDescription.text = HtmlCompat.fromHtml(
-                event.description.toString(),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                event.description ?: "", HtmlCompat.FROM_HTML_MODE_LEGACY
             )
 
             btnRegistration.setOnClickListener {
@@ -130,15 +128,15 @@ class DetailFragment : Fragment() {
     // Business Logic
     private fun addFavorite(event: Event) {
         val favoriteEvent = FavoriteEvent(
-            id = event.id?.toString().orEmpty(),
-            name = event.name?.toString().orEmpty(),
-            description = event.description?.toString().orEmpty(),
-            link = event.link?.toString().orEmpty(),
-            ownerName = event.ownerName?.toString().orEmpty(),
-            cityName = event.cityName?.toString().orEmpty(),
+            id = event.id?.toString() ?: "",
+            name = event.name.orEmpty(),
+            description = event.description.orEmpty(),
+            link = event.link.orEmpty(),
+            ownerName = event.ownerName.orEmpty(),
+            cityName = event.cityName.orEmpty(),
             beginTime = FormatTime.formatDateOnly(event.beginTime),
-            imageLogo = event.imageLogo?.toString().orEmpty(),
-            mediaCover = event.mediaCover?.toString().orEmpty(),
+            imageLogo = event.imageLogo.orEmpty(),
+            mediaCover = event.mediaCover.orEmpty()
         )
         detailViewModel.insert(favoriteEvent)
     }

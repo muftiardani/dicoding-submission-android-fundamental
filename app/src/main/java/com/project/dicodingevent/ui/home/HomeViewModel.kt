@@ -93,7 +93,7 @@ class HomeViewModel : ViewModel() {
         if (response.isSuccessful) {
             val responseBody = response.body()
             if (responseBody != null) {
-                onSuccess(responseBody.listEvents ?: emptyList())
+                onSuccess(responseBody.listEvents)
             } else if (showError) {
                 _errorMessage.value = "Data tidak ditemukan"
             }

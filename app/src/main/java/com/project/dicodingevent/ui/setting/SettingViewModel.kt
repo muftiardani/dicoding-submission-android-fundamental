@@ -19,8 +19,4 @@ class SettingViewModel(
             darkModePreferences.saveThemeSetting(isDarkModeActive)
         }
     }
-
-    companion object {
-        private const val TAG = "SettingViewModel"
-    }
 }
